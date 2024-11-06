@@ -1,4 +1,3 @@
-import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
 import {
   AlertDialog,
   AlertDialogBody,
@@ -14,7 +13,6 @@ import {
   FormLabel,
   Heading,
   HStack,
-  IconButton,
   Input,
   Select,
   Text,
@@ -26,11 +24,9 @@ import { useRef, useState } from 'react';
 
 import { categories } from './entities/event/config';
 import { notificationOptions } from './entities/notification/config';
-import { MonthView } from './features/calendar/ui/MonthView.tsx';
-import { WeekView } from './features/calendar/ui/WeekView.tsx';
+import { ScheduleCalendar } from './features/calendar/ui/ScheduleCalendar.tsx';
 import { NotificationAlerts } from './features/notification/ui/NotificationAlerts.tsx';
 import { EventSearch } from './features/search-event/ui/EventSearch.tsx';
-import { useCalendarView } from './hooks/useCalendarView.ts';
 import { useEventForm } from './hooks/useEventForm.ts';
 import { useEventOperations } from './hooks/useEventOperations.ts';
 import { Event, EventForm, RepeatType } from './types';
@@ -73,8 +69,6 @@ function App() {
   const { events, saveEvent, deleteEvent } = useEventOperations(Boolean(editingEvent), () =>
     setEditingEvent(null)
   );
-
-  const { view, setView, navigate } = useCalendarView();
 
   const [isOverlapDialogOpen, setIsOverlapDialogOpen] = useState(false);
   const [overlappingEvents, setOverlappingEvents] = useState<Event[]>([]);
@@ -257,34 +251,9 @@ function App() {
           </Button>
         </VStack>
 
-        <VStack flex={1} spacing={5} align="stretch">
-          <Heading>일정 보기</Heading>
-
-          <HStack mx="auto" justifyContent="space-between">
-            <IconButton
-              aria-label="Previous"
-              icon={<ChevronLeftIcon />}
-              onClick={() => navigate('prev')}
-            />
-            <Select
-              aria-label="view"
-              value={view}
-              onChange={(e) => setView(e.target.value as 'week' | 'month')}
-            >
-              <option value="week">Week</option>
-              <option value="month">Month</option>
-            </Select>
-            <IconButton
-              aria-label="Next"
-              icon={<ChevronRightIcon />}
-              onClick={() => navigate('next')}
-            />
-          </HStack>
-
-          {view === 'week' && <WeekView />}
-          {view === 'month' && <MonthView />}
-        </VStack>
-
+        {/* 일정 보기 */}
+        <ScheduleCalendar />
+        {/* 일정 검색 */}
         <EventSearch events={events} deleteEvent={deleteEvent} />
       </Flex>
 
