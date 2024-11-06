@@ -25,6 +25,7 @@ export const EventSearch: React.FC<{
       {hasSearchedEvent ? (
         filteredEvents.map((event) => (
           <SearchedEventBox
+            key={event.id}
             event={event}
             notifiedEvents={notifiedEvents}
             deleteEvent={deleteEvent}

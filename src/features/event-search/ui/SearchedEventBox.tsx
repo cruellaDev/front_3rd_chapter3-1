@@ -13,7 +13,7 @@ export const SearchedEventBox: React.FC<{
   deleteEvent: (eventId: string) => void;
 }> = ({ event, notifiedEvents, deleteEvent }) => {
   return (
-    <Box key={event.id} borderWidth={1} borderRadius="lg" p={3} width="100%">
+    <Box borderWidth={1} borderRadius="lg" p={3} width="100%">
       <HStack justifyContent="space-between">
         <VStack align="start">
           <NotificationHighlighter
