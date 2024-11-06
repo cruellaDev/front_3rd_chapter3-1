@@ -4,8 +4,8 @@ import React from 'react';
 import { NotificationHighlighter } from '../../../entities/notification/ui/NotificationHighliter';
 import { NotificationTimeLabelText } from '../../../entities/notification/ui/NotificationTimeLabelText';
 import { Event } from '../../../types';
-import { EventDeleteButton } from '../../delete-event/ui/EventDeleteButton';
-import { EventEditButton } from '../../edit-event/ui/EventEditButton';
+import { EventDeleteButton } from '../../event-delete/ui/EventDeleteButton';
+import { EventEditButton } from '../../event-edit/ui/EventEditButton';
 
 export const SearchedEventBox: React.FC<{
   event: Event;
