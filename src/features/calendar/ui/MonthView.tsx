@@ -12,9 +12,9 @@ import {
   Tr,
   VStack,
 } from '@chakra-ui/react';
+import React from 'react';
 
 import { weekDays } from '../../../entities/calendar/config';
-import { useCalendarView } from '../../../hooks/useCalendarView';
 import { useEventForm } from '../../../hooks/useEventForm';
 import { useEventOperations } from '../../../hooks/useEventOperations';
 import { useNotifications } from '../../../hooks/useNotifications';
@@ -26,11 +26,14 @@ import {
   getWeeksAtMonth,
 } from '../../../utils/dateUtils';
 
-export const MonthView = () => {
+export const MonthView: React.FC<{
+  view: 'month';
+  currentDate: Date;
+  holidays: { [key: string]: string };
+}> = ({ view, currentDate, holidays }) => {
   const { editingEvent, setEditingEvent } = useEventForm();
   const { events } = useEventOperations(Boolean(editingEvent), () => setEditingEvent(null));
   const { notifiedEvents } = useNotifications(events);
-  const { view, currentDate, holidays } = useCalendarView();
   const { filteredEvents } = useSearch(events, currentDate, view);
 
   const weeks = getWeeksAtMonth(currentDate);

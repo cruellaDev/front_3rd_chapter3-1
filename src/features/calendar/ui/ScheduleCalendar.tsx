@@ -6,7 +6,7 @@ import { WeekView } from './WeekView';
 import { useCalendarView } from '../../../hooks/useCalendarView';
 
 export const ScheduleCalendar = () => {
-  const { view, setView, navigate } = useCalendarView();
+  const { view, setView, navigate, currentDate, holidays } = useCalendarView();
 
   return (
     <VStack flex={1} spacing={5} align="stretch">
@@ -33,8 +33,8 @@ export const ScheduleCalendar = () => {
         />
       </HStack>
 
-      {view === 'week' && <WeekView />}
-      {view === 'month' && <MonthView />}
+      {view === 'week' && <WeekView view={view} currentDate={currentDate} />}
+      {view === 'month' && <MonthView view={view} currentDate={currentDate} holidays={holidays} />}
     </VStack>
   );
 };
