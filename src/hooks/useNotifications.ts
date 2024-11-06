@@ -1,11 +1,12 @@
 import { useInterval } from '@chakra-ui/react';
 import { useState } from 'react';
 
+import { Notification, removeFromNotifications } from '../entities/notification/model/Notificaion';
 import { Event } from '../types';
 import { createNotificationMessage, getUpcomingEvents } from '../utils/notificationUtils';
 
 export const useNotifications = (events: Event[]) => {
-  const [notifications, setNotifications] = useState<{ id: string; message: string }[]>([]);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
   const [notifiedEvents, setNotifiedEvents] = useState<string[]>([]);
 
   const checkUpcomingEvents = () => {
@@ -24,7 +25,7 @@ export const useNotifications = (events: Event[]) => {
   };
 
   const removeNotification = (index: number) => {
-    setNotifications((prev) => prev.filter((_, i) => i !== index));
+    setNotifications((prev) => removeFromNotifications(prev, index));
   };
 
   useInterval(checkUpcomingEvents, 1000); // 1초마다 체크
