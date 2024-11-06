@@ -6,19 +6,15 @@ import {
   EditIcon,
 } from '@chakra-ui/icons';
 import {
-  Alert,
   AlertDialog,
   AlertDialogBody,
   AlertDialogContent,
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogOverlay,
-  AlertIcon,
-  AlertTitle,
   Box,
   Button,
   Checkbox,
-  CloseButton,
   Flex,
   FormControl,
   FormLabel,
@@ -38,6 +34,7 @@ import { categories } from './entities/event/config';
 import { notificationOptions } from './entities/notification/config';
 import { MonthView } from './features/calendar/ui/MonthView.tsx';
 import { WeekView } from './features/calendar/ui/WeekView.tsx';
+import { NotificationAlerts } from './features/notification/ui/NotificationAlerts.tsx';
 import { useCalendarView } from './hooks/useCalendarView.ts';
 import { useEventForm } from './hooks/useEventForm.ts';
 import { useEventOperations } from './hooks/useEventOperations.ts';
@@ -85,7 +82,7 @@ function App() {
     setEditingEvent(null)
   );
 
-  const { notifications, notifiedEvents, setNotifications } = useNotifications(events);
+  const { notifiedEvents } = useNotifications(events);
   const { view, setView, currentDate, navigate } = useCalendarView();
   const { searchTerm, filteredEvents, setSearchTerm } = useSearch(events, currentDate, view);
 
@@ -424,22 +421,7 @@ function App() {
           </AlertDialogContent>
         </AlertDialogOverlay>
       </AlertDialog>
-
-      {notifications.length > 0 && (
-        <VStack position="fixed" top={4} right={4} spacing={2} align="flex-end">
-          {notifications.map((notification, index) => (
-            <Alert key={index} status="info" variant="solid" width="auto">
-              <AlertIcon />
-              <Box flex="1">
-                <AlertTitle fontSize="sm">{notification.message}</AlertTitle>
-              </Box>
-              <CloseButton
-                onClick={() => setNotifications((prev) => prev.filter((_, i) => i !== index))}
-              />
-            </Alert>
-          ))}
-        </VStack>
-      )}
+      <NotificationAlerts events={events} />
     </Box>
   );
 }
