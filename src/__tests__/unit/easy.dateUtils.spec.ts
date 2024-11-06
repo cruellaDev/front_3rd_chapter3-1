@@ -54,6 +54,7 @@ describe('getWeekDates', () => {
     expect(result[3]).toEqual(new Date('2024-11-13'));
   });
 
+  // TODO 주의 시작은 일요일, 주의 끝은 토요일임
   it('주의 시작(월요일)에 대해 올바른 주의 날짜들을 반환한다', () => {
     const testDate = new Date('2024-11-04');
     const result = getWeekDates(testDate);
@@ -61,6 +62,7 @@ describe('getWeekDates', () => {
     expect(result[1]).toEqual(new Date('2024-11-04'));
   });
 
+  // TODO 주의 시작은 일요일, 주의 끝은 토요일임
   it('주의 끝(일요일)에 대해 올바른 주의 날짜들을 반환한다', () => {
     const testDate = new Date('2024-11-03');
     const result = getWeekDates(testDate);
