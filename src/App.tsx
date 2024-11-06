@@ -14,8 +14,8 @@ import { useRef, useState } from 'react';
 
 import { ScheduleCalendar } from './features/calendar/ui/ScheduleCalendar.tsx';
 import { EventAddOrUpdateForm } from './features/event-form/ui/EventAddOrUpdateForm.tsx';
+import { EventSearch } from './features/event-search/ui/EventSearch.tsx';
 import { NotificationAlerts } from './features/notification/ui/NotificationAlerts.tsx';
-import { EventSearch } from './features/search-event/ui/EventSearch.tsx';
 import { useEventForm } from './hooks/useEventForm.ts';
 import { useEventOperations } from './hooks/useEventOperations.ts';
 import { Event } from './types';
