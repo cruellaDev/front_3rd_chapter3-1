@@ -1,6 +1,7 @@
 import { useToast } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 
+import { addEventApi, updateEventApi, fetchEventsApi, deleteEventApi } from '../entities/event/api';
 import { Event, EventForm } from '../types';
 
 export const useEventOperations = (editing: boolean, onSave?: () => void) => {
@@ -9,16 +10,56 @@ export const useEventOperations = (editing: boolean, onSave?: () => void) => {
 
   const fetchEvents = async () => {
     try {
-      const response = await fetch('/api/events');
-      if (!response.ok) {
-        throw new Error('Failed to fetch events');
-      }
-      const { events } = await response.json();
-      setEvents(events);
+      const data = await fetchEventsApi();
+      setEvents(data.events);
     } catch (error) {
       console.error('Error fetching events:', error);
       toast({
         title: '이벤트 로딩 실패',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+  };
+
+  const addEvent = async (eventData: EventForm, onSave?: () => void) => {
+    try {
+      await addEventApi(eventData);
+      await fetchEvents();
+      onSave?.();
+      toast({
+        title: '일정이 추가되었습니다.',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      });
+    } catch (error) {
+      console.error('Error saving event:', error);
+      toast({
+        title: '일정 저장 실패',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+  };
+
+  const updateEvent = async (eventData: Event, onSave?: () => void) => {
+    try {
+      await updateEventApi(eventData);
+      await fetchEvents();
+      onSave?.();
+      toast({
+        title: '일정이 추가되었습니다.',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      });
+    } catch (error) {
+      console.error('Error saving event:', error);
+      toast({
+        title: '일정 저장 실패',
         status: 'error',
         duration: 3000,
         isClosable: true,
@@ -68,12 +109,7 @@ export const useEventOperations = (editing: boolean, onSave?: () => void) => {
 
   const deleteEvent = async (id: string) => {
     try {
-      const response = await fetch(`/api/events/${id}`, { method: 'DELETE' });
-
-      if (!response.ok) {
-        throw new Error('Failed to delete event');
-      }
-
+      const response = await deleteEventApi(id);
       await fetchEvents();
       toast({
         title: '일정이 삭제되었습니다.',
@@ -106,5 +142,5 @@ export const useEventOperations = (editing: boolean, onSave?: () => void) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return { events, fetchEvents, saveEvent, deleteEvent };
+  return { events, fetchEvents, addEvent, updateEvent, saveEvent, deleteEvent };
 };
