@@ -10,8 +10,9 @@ import { EventEditButton } from '../../event-edit/ui/EventEditButton';
 export const SearchedEventBox: React.FC<{
   event: Event;
   notifiedEvents: string[];
+  editEvent: (event: Event) => void;
   deleteEvent: (eventId: string) => void;
-}> = ({ event, notifiedEvents, deleteEvent }) => {
+}> = ({ event, notifiedEvents, editEvent, deleteEvent }) => {
   return (
     <Box borderWidth={1} borderRadius="lg" p={3} width="100%">
       <HStack justifyContent="space-between">
@@ -42,7 +43,7 @@ export const SearchedEventBox: React.FC<{
           <NotificationTimeLabelText notificationTime={event.notificationTime} />
         </VStack>
         <HStack>
-          <EventEditButton event={event} />
+          <EventEditButton event={event} editEvent={editEvent} />
           <EventDeleteButton event={event} deleteEvent={deleteEvent} />
         </HStack>
       </HStack>

@@ -15,7 +15,6 @@ import {
 import React from 'react';
 
 import { weekDays } from '../../../entities/calendar/config';
-import { useEventForm } from '../../../hooks/useEventForm';
 import { useEventOperations } from '../../../hooks/useEventOperations';
 import { useNotifications } from '../../../hooks/useNotifications';
 import { useSearch } from '../../../hooks/useSearch';
@@ -31,8 +30,7 @@ export const MonthView: React.FC<{
   currentDate: Date;
   holidays: { [key: string]: string };
 }> = ({ view, currentDate, holidays }) => {
-  const { editingEvent, setEditingEvent } = useEventForm();
-  const { events } = useEventOperations(Boolean(editingEvent), () => setEditingEvent(null));
+  const { events } = useEventOperations();
   const { notifiedEvents } = useNotifications(events);
   const { filteredEvents } = useSearch(events, currentDate, view);
 

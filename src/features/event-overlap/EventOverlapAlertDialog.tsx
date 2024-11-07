@@ -17,8 +17,15 @@ export const EventOverlapAlertDialog: React.FC<{
   isOverlapDialogOpen: boolean;
   setIsOverlapDialogOpen: (value: boolean) => void;
   overlappingEvents: Event[];
-  saveEvent: (event: Event | EventForm) => void;
-}> = ({ isOverlapDialogOpen, setIsOverlapDialogOpen, overlappingEvents, saveEvent }) => {
+  addEvent: (event: EventForm, onSave?: () => void) => Promise<void>;
+  updateEvent: (event: Event, onSave?: () => void) => Promise<void>;
+}> = ({
+  isOverlapDialogOpen,
+  setIsOverlapDialogOpen,
+  overlappingEvents,
+  addEvent,
+  updateEvent,
+}) => {
   const {
     title,
     date,
@@ -33,8 +40,35 @@ export const EventOverlapAlertDialog: React.FC<{
     repeatEndDate,
     notificationTime,
     editingEvent,
+    setEditingEvent,
   } = useEventForm();
   const cancelRef = useRef<HTMLButtonElement>(null);
+
+  const isEditing = !!editingEvent;
+
+  const handleKeepGoing = async () => {
+    setIsOverlapDialogOpen(false);
+    const eventData: EventForm = {
+      title,
+      date,
+      startTime,
+      endTime,
+      description,
+      location,
+      category,
+      repeat: {
+        type: isRepeating ? repeatType : 'none',
+        interval: repeatInterval,
+        endDate: repeatEndDate || undefined,
+      },
+      notificationTime,
+    };
+    if (isEditing) {
+      await updateEvent({ ...eventData, id: editingEvent.id }, () => setEditingEvent(null));
+    } else {
+      await addEvent(eventData), () => setEditingEvent(null);
+    }
+  };
 
   return (
     <AlertDialog
@@ -62,29 +96,7 @@ export const EventOverlapAlertDialog: React.FC<{
             <Button ref={cancelRef} onClick={() => setIsOverlapDialogOpen(false)}>
               취소
             </Button>
-            <Button
-              colorScheme="red"
-              onClick={() => {
-                setIsOverlapDialogOpen(false);
-                saveEvent({
-                  id: editingEvent ? editingEvent.id : undefined,
-                  title,
-                  date,
-                  startTime,
-                  endTime,
-                  description,
-                  location,
-                  category,
-                  repeat: {
-                    type: isRepeating ? repeatType : 'none',
-                    interval: repeatInterval,
-                    endDate: repeatEndDate || undefined,
-                  },
-                  notificationTime,
-                });
-              }}
-              ml={3}
-            >
+            <Button colorScheme="red" onClick={handleKeepGoing} ml={3}>
               계속 진행
             </Button>
           </AlertDialogFooter>

@@ -11,11 +11,8 @@ import { useEventOperations } from './hooks/useEventOperations.ts';
 import { Event } from './types';
 
 function App() {
-  const { editingEvent, setEditingEvent } = useEventForm();
-
-  const { events, saveEvent, deleteEvent } = useEventOperations(Boolean(editingEvent), () =>
-    setEditingEvent(null)
-  );
+  const { events, addEvent, updateEvent, deleteEvent } = useEventOperations();
+  const { editEvent } = useEventForm();
 
   const [isOverlapDialogOpen, setIsOverlapDialogOpen] = useState(false);
   const [overlappingEvents, setOverlappingEvents] = useState<Event[]>([]);
@@ -28,12 +25,13 @@ function App() {
           events={events}
           setIsOverlapDialogOpen={setIsOverlapDialogOpen}
           setOverlappingEvents={setOverlappingEvents}
-          saveEvent={saveEvent}
+          addEvent={addEvent}
+          updateEvent={updateEvent}
         />
         {/* 일정 보기 */}
         <ScheduleCalendar />
         {/* 일정 검색 */}
-        <EventSearch events={events} deleteEvent={deleteEvent} />
+        <EventSearch events={events} editEvent={editEvent} deleteEvent={deleteEvent} />
       </Flex>
 
       {/* 일정 겹침 경고 */}
@@ -41,7 +39,8 @@ function App() {
         isOverlapDialogOpen={isOverlapDialogOpen}
         setIsOverlapDialogOpen={setIsOverlapDialogOpen}
         overlappingEvents={overlappingEvents}
-        saveEvent={saveEvent}
+        addEvent={addEvent}
+        updateEvent={updateEvent}
       />
       {/* 알림 */}
       <NotificationAlerts events={events} />

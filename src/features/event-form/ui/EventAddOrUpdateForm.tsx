@@ -24,57 +24,10 @@ export const EventAddOrUpdateForm: React.FC<{
   events: Event[];
   setOverlappingEvents: (events: Event[]) => void;
   setIsOverlapDialogOpen: (value: boolean) => void;
-  saveEvent: (event: Event | EventForm) => Promise<void>;
-}> = ({ events, setOverlappingEvents, setIsOverlapDialogOpen, saveEvent }) => {
+  addEvent: (event: EventForm, onSave?: () => void) => Promise<void>;
+  updateEvent: (event: Event, onSave?: () => void) => Promise<void>;
+}> = ({ events, setOverlappingEvents, setIsOverlapDialogOpen, addEvent, updateEvent }) => {
   const toast = useToast();
-
-  const addOrUpdateEvent = async () => {
-    if (!title || !date || !startTime || !endTime) {
-      toast({
-        title: '필수 정보를 모두 입력해주세요.',
-        status: 'error',
-        duration: 3000,
-        isClosable: true,
-      });
-      return;
-    }
-
-    if (startTimeError || endTimeError) {
-      toast({
-        title: '시간 설정을 확인해주세요.',
-        status: 'error',
-        duration: 3000,
-        isClosable: true,
-      });
-      return;
-    }
-
-    const eventData: Event | EventForm = {
-      id: editingEvent ? editingEvent.id : undefined,
-      title,
-      date,
-      startTime,
-      endTime,
-      description,
-      location,
-      category,
-      repeat: {
-        type: isRepeating ? repeatType : 'none',
-        interval: repeatInterval,
-        endDate: repeatEndDate || undefined,
-      },
-      notificationTime,
-    };
-
-    const overlapping = findOverlappingEvents(eventData, events);
-    if (overlapping.length > 0) {
-      setOverlappingEvents(overlapping);
-      setIsOverlapDialogOpen(true);
-    } else {
-      await saveEvent(eventData);
-      resetForm();
-    }
-  };
 
   const {
     title,
@@ -102,14 +55,69 @@ export const EventAddOrUpdateForm: React.FC<{
     startTimeError,
     endTimeError,
     editingEvent,
+    setEditingEvent,
     handleStartTimeChange,
     handleEndTimeChange,
     resetForm,
   } = useEventForm();
 
+  const isEditing = !!editingEvent;
+
+  const handleSave = async () => {
+    if (!title || !date || !startTime || !endTime) {
+      toast({
+        title: '필수 정보를 모두 입력해주세요.',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
+
+    if (startTimeError || endTimeError) {
+      toast({
+        title: '시간 설정을 확인해주세요.',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
+
+    const eventData: EventForm = {
+      title,
+      date,
+      startTime,
+      endTime,
+      description,
+      location,
+      category,
+      repeat: {
+        type: isRepeating ? repeatType : 'none',
+        interval: repeatInterval,
+        endDate: repeatEndDate || undefined,
+      },
+      notificationTime,
+    };
+
+    const overlapping = findOverlappingEvents(eventData, events);
+    if (overlapping.length > 0) {
+      setOverlappingEvents(overlapping);
+      setIsOverlapDialogOpen(true);
+      return;
+    }
+
+    if (isEditing) {
+      await updateEvent({ ...eventData, id: editingEvent.id }, () => setEditingEvent(null));
+    } else {
+      await addEvent(eventData, () => setEditingEvent(null));
+    }
+    resetForm();
+  };
+
   return (
     <VStack w="400px" spacing={5} align="stretch">
-      <Heading>{editingEvent ? '일정 수정' : '일정 추가'}</Heading>
+      <Heading>{isEditing ? '일정 수정' : '일정 추가'}</Heading>
 
       <FormControl>
         <FormLabel>제목</FormLabel>
@@ -227,8 +235,8 @@ export const EventAddOrUpdateForm: React.FC<{
         </VStack>
       )}
 
-      <Button data-testid="event-submit-button" onClick={addOrUpdateEvent} colorScheme="blue">
-        {editingEvent ? '일정 수정' : '일정 추가'}
+      <Button data-testid="event-submit-button" onClick={handleSave} colorScheme="blue">
+        {isEditing ? '일정 수정' : '일정 추가'}
       </Button>
     </VStack>
   );

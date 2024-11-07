@@ -11,8 +11,9 @@ import { Event } from '../../../types';
 
 export const EventSearch: React.FC<{
   events: Event[];
+  editEvent: (event: Event) => void;
   deleteEvent: (eventId: string) => void;
-}> = ({ events, deleteEvent }) => {
+}> = ({ events, editEvent, deleteEvent }) => {
   const { view, currentDate } = useCalendarView();
   const { searchTerm, filteredEvents, setSearchTerm } = useSearch(events, currentDate, view);
   const { notifiedEvents } = useNotifications(events);
@@ -28,6 +29,7 @@ export const EventSearch: React.FC<{
             key={event.id}
             event={event}
             notifiedEvents={notifiedEvents}
+            editEvent={editEvent}
             deleteEvent={deleteEvent}
           />
         ))
