@@ -1,6 +1,7 @@
 import { Box, HStack, Text, VStack } from '@chakra-ui/react';
 import React from 'react';
 
+import { getPeriodByRepeat } from '../../../entities/event/model/Event';
 import { NotificationHighlighter } from '../../../entities/notification/ui/NotificationHighliter';
 import { NotificationTimeLabelText } from '../../../entities/notification/ui/NotificationTimeLabelText';
 import { Event } from '../../../types';
@@ -32,10 +33,7 @@ export const SearchedEventBox: React.FC<{
           {event.repeat.type !== 'none' && (
             <Text>
               반복: {event.repeat.interval}
-              {event.repeat.type === 'daily' && '일'}
-              {event.repeat.type === 'weekly' && '주'}
-              {event.repeat.type === 'monthly' && '월'}
-              {event.repeat.type === 'yearly' && '년'}
+              {event.repeat.type && getPeriodByRepeat(event.repeat.type)}
               마다
               {event.repeat.endDate && ` (종료: ${event.repeat.endDate})`}
             </Text>
