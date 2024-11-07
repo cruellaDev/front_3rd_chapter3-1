@@ -1,4 +1,3 @@
-import { Box, Flex } from '@chakra-ui/react';
 import { useState } from 'react';
 
 import { ScheduleCalendar } from './features/calendar/ui/ScheduleCalendar.tsx';
@@ -9,6 +8,8 @@ import { NotificationAlerts } from './features/notification/ui/NotificationAlert
 import { useEventForm } from './hooks/useEventForm.ts';
 import { useEventOperations } from './hooks/useEventOperations.ts';
 import { Event } from './types';
+import { ContainerBox } from './widget/ui/ContainerBox.tsx';
+import { FlexibleSection } from './widget/ui/FlexiableSection.tsx';
 
 function App() {
   const { events, addEvent, updateEvent, deleteEvent } = useEventOperations();
@@ -18,8 +19,8 @@ function App() {
   const [overlappingEvents, setOverlappingEvents] = useState<Event[]>([]);
 
   return (
-    <Box w="full" h="100vh" m="auto" p={5}>
-      <Flex gap={6} h="full">
+      <ContainerBox>
+        <FlexibleSection>
         {/* 일정 추가/삭제 */}
         <EventAddOrUpdateForm
           events={events}
@@ -32,7 +33,7 @@ function App() {
         <ScheduleCalendar />
         {/* 일정 검색 */}
         <EventSearch events={events} editEvent={editEvent} deleteEvent={deleteEvent} />
-      </Flex>
+        </FlexibleSection>
 
       {/* 일정 겹침 경고 */}
       <EventOverlapAlertDialog
@@ -43,8 +44,7 @@ function App() {
         updateEvent={updateEvent}
       />
       {/* 알림 */}
-      <NotificationAlerts events={events} />
-    </Box>
+      </ContainerBox>
   );
 }
 
