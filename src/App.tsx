@@ -10,40 +10,32 @@ import { ContainerBox } from './widget/ui/ContainerBox.tsx';
 import { FlexibleSection } from './widget/ui/FlexiableSection.tsx';
 
 function App() {
-  const { events, addEvent, updateEvent, deleteEvent } = useEventOperations();
-  const { editEvent } = useEventForm();
-
   const [isOverlapDialogOpen, setIsOverlapDialogOpen] = useState(false);
   const [overlappingEvents, setOverlappingEvents] = useState<Event[]>([]);
 
   return (
-      <ContainerBox>
-        <FlexibleSection>
-          {/* 일정 추가/삭제 */}
-          <EventAddOrUpdateForm
-            events={events}
-            setIsOverlapDialogOpen={setIsOverlapDialogOpen}
-            setOverlappingEvents={setOverlappingEvents}
-            addEvent={addEvent}
-            updateEvent={updateEvent}
-          />
-          {/* 일정 보기 */}
-          <ScheduleCalendar />
-          {/* 일정 검색 */}
-          <EventSearch events={events} editEvent={editEvent} deleteEvent={deleteEvent} />
-        </FlexibleSection>
-
-        {/* 일정 겹침 경고 */}
-        <EventOverlapAlertDialog
-          isOverlapDialogOpen={isOverlapDialogOpen}
+    <ContainerBox>
+      <FlexibleSection>
+        {/* 일정 추가/삭제 */}
+        <EventAddOrUpdateForm
           setIsOverlapDialogOpen={setIsOverlapDialogOpen}
-          overlappingEvents={overlappingEvents}
-          addEvent={addEvent}
-          updateEvent={updateEvent}
+          setOverlappingEvents={setOverlappingEvents}
         />
-        {/* 알림 */}
-        <NotificationAlerts />
-      </ContainerBox>
+        {/* 일정 보기 */}
+        <ScheduleCalendar />
+        {/* 일정 검색 */}
+        <EventSearch />
+      </FlexibleSection>
+
+      {/* 일정 겹침 경고 */}
+      <EventOverlapAlertDialog
+        isOverlapDialogOpen={isOverlapDialogOpen}
+        setIsOverlapDialogOpen={setIsOverlapDialogOpen}
+        overlappingEvents={overlappingEvents}
+      />
+      {/* 알림 */}
+      <NotificationAlerts />
+    </ContainerBox>
   );
 }
 
