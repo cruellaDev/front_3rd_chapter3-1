@@ -1,11 +1,13 @@
-import { useEffect, useState } from 'react';
+import { useAtom } from 'jotai';
+import { useEffect } from 'react';
 
 import { fetchHolidays } from '../apis/fetchHolidays';
+import { currentDateAtom, holidaysAtom, viewAtom } from '../entities/calendar/model/Calendar';
 
 export const useCalendarView = () => {
-  const [view, setView] = useState<'week' | 'month'>('month');
-  const [currentDate, setCurrentDate] = useState(new Date());
-  const [holidays, setHolidays] = useState<{ [key: string]: string }>({});
+  const [view, setView] = useAtom(viewAtom);
+  const [currentDate, setCurrentDate] = useAtom(currentDateAtom);
+  const [holidays, setHolidays] = useAtom(holidaysAtom);
 
   const navigate = (direction: 'prev' | 'next') => {
     setCurrentDate((prevDate) => {
@@ -22,7 +24,7 @@ export const useCalendarView = () => {
 
   useEffect(() => {
     setHolidays(fetchHolidays(currentDate));
-  }, [currentDate]);
+  }, [currentDate, setHolidays]);
 
   return { view, setView, currentDate, setCurrentDate, holidays, navigate };
 };
