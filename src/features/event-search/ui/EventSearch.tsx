@@ -11,7 +11,9 @@ import { Event } from '../../../types';
 
 export const EventSearch: React.FC<{
   events: Event[];
+  // eslint-disable-next-line no-unused-vars
   editEvent: (event: Event) => void;
+  // eslint-disable-next-line no-unused-vars
   deleteEvent: (eventId: string) => void;
 }> = ({ events, editEvent, deleteEvent }) => {
   const { view, currentDate } = useCalendarView();

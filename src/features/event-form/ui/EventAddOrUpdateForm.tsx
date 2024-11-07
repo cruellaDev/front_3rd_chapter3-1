@@ -22,9 +22,13 @@ import { getTimeErrorMessage } from '../../../utils/timeValidation';
 
 export const EventAddOrUpdateForm: React.FC<{
   events: Event[];
+  // eslint-disable-next-line no-unused-vars
   setOverlappingEvents: (events: Event[]) => void;
+  // eslint-disable-next-line no-unused-vars
   setIsOverlapDialogOpen: (value: boolean) => void;
+  // eslint-disable-next-line no-unused-vars
   addEvent: (event: EventForm, onSave?: () => void) => Promise<void>;
+  // eslint-disable-next-line no-unused-vars
   updateEvent: (event: Event, onSave?: () => void) => Promise<void>;
 }> = ({ events, setOverlappingEvents, setIsOverlapDialogOpen, addEvent, updateEvent }) => {
   const toast = useToast();
