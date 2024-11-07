@@ -77,10 +77,10 @@ describe('getFilteredEvents', () => {
     },
   ];
 
-  // TODO currentDate, view 와도 영향을 받아서 쪼개야 함
+  // ? currentDate와 view도 영향을 받는데 이 경우에는 다른 조건도 같이 알고 있어야 테스트가 진행되는 것 아닌가?
   it("검색어 '이벤트 2'에 맞는 이벤트만 반환한다", () => {
     const searchTerm = '이벤트 2';
-    const testDate = new Date(2024, 6);
+    const testDate = new Date('2024-07-01');
     const testView = 'week';
     const result = getFilteredEvents(mockEvents, searchTerm, testDate, testView);
     expect(result.length).toBe(1);
@@ -88,7 +88,7 @@ describe('getFilteredEvents', () => {
 
   it('주간 뷰에서 2024-07-01 주의 이벤트만 반환한다', () => {
     const searchTerm = '';
-    const testDate = new Date(2024, 6);
+    const testDate = new Date('2024-06-30');
     const testView = 'week';
     const result = getFilteredEvents(mockEvents, searchTerm, testDate, testView);
     expect(result.length).toBe(2);
@@ -96,7 +96,7 @@ describe('getFilteredEvents', () => {
 
   it('월간 뷰에서 2024년 7월의 모든 이벤트를 반환한다', () => {
     const searchTerm = '';
-    const testDate = new Date(2024, 6);
+    const testDate = new Date('2024-07-01');
     const testView = 'month';
     const result = getFilteredEvents(mockEvents, searchTerm, testDate, testView);
     expect(result.length).toBe(4);
@@ -110,13 +110,29 @@ describe('getFilteredEvents', () => {
     expect(result.length).toBe(2);
   });
 
-  // TODO view 'week', 'month' 필수값이라 나눠서 확인해야 할 것 같음
+  // ! 날짜가 2024-07-01 이고, view 가 'week' 이고 검색어가 존재하지 않을 시 해당 주의 모든 이벤트를 반환한다가 맞지 않을까?
   it('검색어가 없을 때 모든 이벤트를 반환한다', () => {
     const searchTerm = '';
     const testDate = new Date(2024, 6);
     const testView = 'week';
     const result = getFilteredEvents(mockEvents, searchTerm, testDate, testView);
     expect(result.length).toBe(2);
+  });
+
+  it('날짜가 2024-07-01 이고, view 가 "week" 이고 검색어가 존재하지 않을 시 해당 주의 모든 이벤트를 반환한다', () => {
+    const searchTerm = '';
+    const testDate = new Date('2024-07-01');
+    const testView = 'week';
+    const result = getFilteredEvents(mockEvents, searchTerm, testDate, testView);
+    expect(result.length).toBe(2);
+  });
+
+  it('날짜가 2024-07-01 이고, view 가 "month" 이고 검색어가 존재하지 않을 시 해당 주의 모든 이벤트를 반환한다', () => {
+    const searchTerm = '';
+    const testDate = new Date('2024-07-01');
+    const testView = 'month';
+    const result = getFilteredEvents(mockEvents, searchTerm, testDate, testView);
+    expect(result.length).toBe(4);
   });
 
   it('검색어가 대소문자를 구분하지 않고 작동한다', () => {
@@ -127,10 +143,58 @@ describe('getFilteredEvents', () => {
     expect(result.length).toBe(3);
   });
 
-  // TODO 올바르게를 어떻게 쪼갤지 고민해 보기
+  // ! 월 초와 월 말은 해당 월말 보이게 쪼개자!
   it('월의 경계에 있는 이벤트를 올바르게 필터링한다', () => {
     const searchTerm = '';
-    const testDate = new Date(2024, 6, 31);
+    const testDate = new Date('2024-07-01');
+    const testView = 'month';
+    const result = getFilteredEvents(mockEvents, searchTerm, testDate, testView);
+    expect(result.length).toBe(4);
+  });
+
+  it('7월의 초의 경우 7월의 월간 이벤트만 필터링한다', () => {
+    const searchTerm = '';
+    const testDate = new Date('2024-07-01');
+    const testView = 'month';
+    const result = getFilteredEvents(mockEvents, searchTerm, testDate, testView);
+    expect(result.length).toBe(4);
+  });
+
+  it('7월의 말의 경우 7월의 월간 이벤트만 필터링한다', () => {
+    const searchTerm = '';
+    const testDate = new Date('2024-07-31');
+    const testView = 'month';
+    const result = getFilteredEvents(mockEvents, searchTerm, testDate, testView);
+    expect(result.length).toBe(4);
+  });
+
+  it('6월의 말의 경우 7월의 월간 이벤트를 필터링하지 않는다', () => {
+    const searchTerm = '';
+    const testDate = new Date('2024-06-30');
+    const testView = 'month';
+    const result = getFilteredEvents(mockEvents, searchTerm, testDate, testView);
+    expect(result.length).toBe(1);
+  });
+
+  it('8월의 초의 경우 7월의 월간 이벤트를 필터링하지 않는다', () => {
+    const searchTerm = '';
+    const testDate = new Date('2024-08-01');
+    const testView = 'month';
+    const result = getFilteredEvents(mockEvents, searchTerm, testDate, testView);
+    expect(result.length).toBe(1);
+  });
+
+  it('2024-06-30의 경우 7월의 첫주의 이벤트까지 필터링한다', () => {
+    const searchTerm = '';
+    const testDate = new Date('2024-06-30');
+    const testView = 'week';
+    const result = getFilteredEvents(mockEvents, searchTerm, testDate, testView);
+    expect(result.length).toBe(2);
+  });
+
+  it('2024-08-01의 경우 7월의 마지막주의 이벤트까지 필터링한다', () => {
+    const searchTerm = '';
+    const testDate = new Date('2024-08-01');
     const testView = 'week';
     const result = getFilteredEvents(mockEvents, searchTerm, testDate, testView);
     expect(result.length).toBe(2);

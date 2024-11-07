@@ -10,6 +10,7 @@ import {
   getWeeksAtMonth,
   isDateInRange,
 } from '../../utils/dateUtils';
+import { isInvalidDate } from '../utils';
 
 describe('getDaysInMonth', () => {
   it('1월은 31일 수를 반환한다', () => {
@@ -32,7 +33,8 @@ describe('getDaysInMonth', () => {
     expect(result).toBe(28);
   });
 
-  // TODO 적절히 처리한다는 게 뭘까
+  // ? Q. 적절히 처리한다는 게 뭘까
+  // ! A. 유효하지 않은 월의 경우 12로 나는 값의 몫만큼 더한 해의 나머지만큼의 월의 날짜를 반환한다. 로 바꾸면 더 좋을 것 같다.
   it('유효하지 않은 월에 대해 적절히 처리한다', () => {
     const result = getDaysInMonth(2024, 23);
     const testDate = new Date(2024, 23, 0);
@@ -42,11 +44,7 @@ describe('getDaysInMonth', () => {
 });
 
 describe('getWeekDates', () => {
-  // TODO 올바른 주의 날짜는 뭘까
-  // TODO 7개 나오는지도 쪼개기
-  // TODO 처음 날짜가 일요일인지도 확인
-  // TODO 마지막 날짜가 토요일인지도 확인
-  // TODO 정 가운데 날짜가 수요일인지도 확인
+  // ! 올바른 주란 7개, 주의 시작은 일요일, 주의 끝은 토요일, 주의 가운데는 수요일
   it('주중의 날짜(수요일)에 대해 올바른 주의 날짜들을 반환한다', () => {
     const testDate = new Date('2024-11-13');
     const result = getWeekDates(testDate);
@@ -54,48 +52,57 @@ describe('getWeekDates', () => {
     expect(result[3]).toEqual(new Date('2024-11-13'));
   });
 
-  // TODO 주의 시작은 일요일, 주의 끝은 토요일임
-  it('주의 시작(월요일)에 대해 올바른 주의 날짜들을 반환한다', () => {
-    const testDate = new Date('2024-11-04');
+  // 7개
+  it('반환하는 날짜가 7개인지 확인한다.', () => {
+    const testDate = new Date('2024-11-13');
     const result = getWeekDates(testDate);
     expect(result.length).toBe(7);
-    expect(result[1]).toEqual(new Date('2024-11-04'));
   });
 
-  // TODO 주의 시작은 일요일, 주의 끝은 토요일임
-  it('주의 끝(일요일)에 대해 올바른 주의 날짜들을 반환한다', () => {
+  // 주의 시작 일요일에 대한 올바른 날짜이므로 인덱스를 확인한다.
+  it('주의 시작(일요일)에 대해 올바른 주의 날짜들을 반환한다', () => {
     const testDate = new Date('2024-11-03');
     const result = getWeekDates(testDate);
-    expect(result.length).toBe(7);
-    expect(result[0]).toEqual(new Date('2024-11-03'));
+    expect(result[0].getDay()).toBe(0);
+  });
+
+  // 주의 끝 토요일에 대한 올바른 날짜이므로 인덱스를 확인한다.
+  it('주의 끝(토요일)에 대해 올바른 주의 날짜들을 반환한다', () => {
+    const testDate = new Date('2024-11-03');
+    const result = getWeekDates(testDate);
+    expect(result[6].getDay()).toBe(6);
+  });
+
+  // 주의 중간 수요일에 대한 올바른 날짜인 인덱스를 확인한다.
+  it('주의 중간(수요일)에 대해 올바른 주의 날짜들을 반환한다', () => {
+    const testDate = new Date('2024-11-03');
+    const result = getWeekDates(testDate);
+    expect(result[3].getDay()).toBe(3);
   });
 
   it('연도를 넘어가는 주의 날짜를 정확히 처리한다 (연말)', () => {
-    const testDate = new Date('2023-12-31');
+    const testDate = new Date('2024-01-01');
     const result = getWeekDates(testDate);
-    expect(result.length).toBe(7);
     expect(result[0]).toEqual(new Date('2023-12-31'));
+    expect(result[1]).toEqual(new Date('2024-01-01'));
   });
 
   it('연도를 넘어가는 주의 날짜를 정확히 처리한다 (연초)', () => {
-    const testDate = new Date('2024-01-01');
+    const testDate = new Date('2023-12-31');
     const result = getWeekDates(testDate);
-    expect(result.length).toBe(7);
+    expect(result[0]).toEqual(new Date('2023-12-31'));
     expect(result[1]).toEqual(new Date('2024-01-01'));
   });
 
   it('윤년의 2월 29일을 포함한 주를 올바르게 처리한다', () => {
     const testDate = new Date('2024-02-28');
     const result = getWeekDates(testDate);
-    expect(result.length).toBe(7);
     expect(result[4]).toEqual(new Date('2024-02-29'));
+    expect(result[5]).toEqual(new Date('2024-03-01'));
   });
 
-  // TODO 올바르게 처리는 뭘까?
-  // TODO 쪼개기
-  // TODO 평년 2월 28일
-  // TODO 1월 31일
-  // TODO 4월 30일
+  // ? Q. 올바르게 처리는 뭘까?
+  // ! A. 윤년 2월 29일, 평년 2월 28일, 1월 31일, 4월 30일
   it('월의 마지막 날짜를 포함한 주를 올바르게 처리한다', () => {
     const testDate = new Date('2024-04-30');
     const result = getWeekDates(testDate);
@@ -103,11 +110,45 @@ describe('getWeekDates', () => {
     expect(result[3]).toEqual(new Date('2024-05-01'));
   });
 
-  // TODO 올바르지 않은 날짜는 처리되나?
+  // 윤년 2월 29일은 위에 있으므로 평년 2월 28일을 확인한다.
+  it('평년의 2월 28일을 포함한 주를 올바르게 처리한다', () => {
+    const testDate = new Date('2023-02-28');
+    const result = getWeekDates(testDate);
+    expect(result[2]).toEqual(new Date('2023-02-28'));
+    expect(result[3]).toEqual(new Date('2023-03-01'));
+  });
+
+  // 31일로 끝나는 날
+  it('31로 끝나는 날을 포함한 주를 올바르게 처리한다', () => {
+    const testDate = new Date('2024-03-31');
+    const result = getWeekDates(testDate);
+    expect(result[0]).toEqual(new Date('2024-03-31'));
+    expect(result[1]).toEqual(new Date('2024-04-01'));
+  });
+
+  // 30일로 끝나는 날
+  it('30으로 끝나는 날을 포함한 주를 올바르게 처리한다', () => {
+    const testDate = new Date('2024-04-30');
+    const result = getWeekDates(testDate);
+    expect(result[2]).toEqual(new Date('2024-04-30'));
+    expect(result[3]).toEqual(new Date('2024-05-01'));
+  });
+
+  // ? Q. 올바르지 않은 날짜는 처리되나?
+  it('올바르지 않은 날은 Invalid Date를 포함한 주를 반환한다', () => {
+    const testDate = new Date('2024-13-30');
+    const result = getWeekDates(testDate);
+    expect(isInvalidDate(result[0])).toBe(true);
+    expect(isInvalidDate(result[1])).toBe(true);
+    expect(isInvalidDate(result[2])).toBe(true);
+    expect(isInvalidDate(result[3])).toBe(true);
+    expect(isInvalidDate(result[4])).toBe(true);
+    expect(isInvalidDate(result[5])).toBe(true);
+    expect(isInvalidDate(result[6])).toBe(true);
+  });
 });
 
 describe('getWeeksAtMonth', () => {
-  // TODO 쪼개기
   it('2024년 7월 1일의 올바른 주 정보를 반환해야 한다', () => {
     const testDate = new Date('2024-07-01');
     const result = getWeeksAtMonth(testDate);
@@ -115,8 +156,20 @@ describe('getWeeksAtMonth', () => {
     expect(result[0][1]).toBe(1);
     expect(result[4][3]).toBe(31);
   });
-  // TODO 윤년
-  // TODO 올바르지 않은 날짜는 처리되나?
+  // ! 윤년
+  it('2024년 2월 29일의 올바른 주 정보를 반환해야 한다', () => {
+    const testDate = new Date('2024-02-29');
+    const result = getWeeksAtMonth(testDate);
+    expect(result.length).toBe(5);
+    expect(result[0][4]).toBe(1);
+    expect(result[4][4]).toBe(29);
+  });
+  // ! 올바르지 않은 날짜
+  it('올바르지 않은 날짜의 경우 빈 배열을 반환한다', () => {
+    const testDate = new Date('2024-13-30');
+    const result = getWeeksAtMonth(testDate);
+    expect(result.length).toBe(0);
+  });
 });
 
 describe('getEventsForDay', () => {
