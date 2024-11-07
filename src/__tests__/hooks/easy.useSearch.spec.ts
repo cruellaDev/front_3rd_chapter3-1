@@ -156,7 +156,7 @@ it('현재 뷰가 월간일 경우 주간에 해당하는 이벤트만 반환해
 });
 
 it('검색어를 "회의"에서 "점심"으로 변경하면 필터링된 결과가 즉시 업데이트되어야 한다', () => {
-  // ? testDate 를 공통 지역변수로 선언해서 사용할 경우 해당 테스트만 currentDate 는 '2024-10-27'이 된다. 왜지!
+  // ? testDate 를 공통 지역변수로 선언해서 사용할 경우 해당 테스트만 currentDate 는 '2024-10-27'이 된다. 왜지! (근데 다시 또 바뀜...!)
   const testDate = new Date('2024-11-01');
   const testView = 'month';
   const { result } = renderHook(() => useSearch(mockEvents, testDate, testView));
