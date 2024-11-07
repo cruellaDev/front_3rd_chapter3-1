@@ -22,7 +22,7 @@ import { formatWeek, getWeekDates } from '../../../utils/dateUtils';
 
 export const WeekView: React.FC<{ view: 'week'; currentDate: Date }> = ({ view, currentDate }) => {
   const { events } = useEventOperations();
-  const { notifiedEvents } = useNotifications(events);
+  const { notifiedEvents } = useNotifications();
   const { filteredEvents } = useSearch(events, currentDate, view);
   const weekDates = getWeekDates(currentDate);
   return (

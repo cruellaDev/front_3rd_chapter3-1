@@ -1,14 +1,10 @@
 import { VStack } from '@chakra-ui/react';
-import React from 'react';
 
 import { NotificationAlertView } from './NotificationAlertView';
 import { useNotifications } from '../../../hooks/useNotifications';
-import { Event } from '../../../types';
 
-export const NotificationAlerts: React.FC<{
-  events: Event[];
-}> = ({ events }) => {
-  const { notifications, removeNotification } = useNotifications(events);
+export const NotificationAlerts = () => {
+  const { notifications, removeNotification } = useNotifications();
 
   const handleRemoveNotification = (index: number) => {
     removeNotification(index);

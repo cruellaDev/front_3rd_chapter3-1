@@ -31,7 +31,7 @@ export const MonthView: React.FC<{
   holidays: { [key: string]: string };
 }> = ({ view, currentDate, holidays }) => {
   const { events } = useEventOperations();
-  const { notifiedEvents } = useNotifications(events);
+  const { notifiedEvents } = useNotifications();
   const { filteredEvents } = useSearch(events, currentDate, view);
 
   const weeks = getWeeksAtMonth(currentDate);

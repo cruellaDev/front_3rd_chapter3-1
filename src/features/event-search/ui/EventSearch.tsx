@@ -16,7 +16,7 @@ export const EventSearch: React.FC<{
 }> = ({ events, editEvent, deleteEvent }) => {
   const { view, currentDate } = useCalendarView();
   const { searchTerm, filteredEvents, setSearchTerm } = useSearch(events, currentDate, view);
-  const { notifiedEvents } = useNotifications(events);
+  const { notifiedEvents } = useNotifications();
   const hasSearchedEvent = filteredEvents.length > 0;
 
   return (
