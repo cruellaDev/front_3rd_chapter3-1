@@ -73,18 +73,52 @@ it('검색어가 비어있을 때 모든 이벤트를 반환해야 한다', () =
   expect(result.current.filteredEvents.length).toBe(5);
 });
 
-// TODO 뭐가 맞는다는 걸까 - 제목, 설명, 위치
+// ? Q. 뭐가 맞는다는 걸까 - 제목, 설명, 위치
+// ! A. 검색어가 제목, 설명, 위치에 모두 해당하지 않을 경우 빈 이벤트 배열을 반환한다. 로 바꾸면 좋겠다.
 it('검색어에 맞는 이벤트만 필터링해야 한다', () => {
   const testDate = new Date('2024-11-01');
   const testView = 'month';
   const { result } = renderHook(() => useSearch(mockEvents, testDate, testView));
   act(() => {
-    result.current.setSearchTerm('운동');
+    result.current.setSearchTerm('아무말이나써보기');
+  });
+  expect(result.current.filteredEvents.length).toBe(0);
+});
+
+// 제목
+it('검색어가 제목과 일치하면 해당 이벤트를 반환해야 한다', () => {
+  const testDate = new Date('2024-11-01');
+  const testView = 'month';
+  const { result } = renderHook(() => useSearch(mockEvents, testDate, testView));
+  act(() => {
+    result.current.setSearchTerm('팀 회의');
   });
   expect(result.current.filteredEvents.length).toBe(1);
 });
 
-// TODO 쪼개기
+// 설명
+it('검색어가 설명과 일치하면 해당 이벤트를 반환해야 한다', () => {
+  const testDate = new Date('2024-11-01');
+  const testView = 'month';
+  const { result } = renderHook(() => useSearch(mockEvents, testDate, testView));
+  act(() => {
+    result.current.setSearchTerm('분기');
+  });
+  expect(result.current.filteredEvents.length).toBe(1);
+});
+
+// 위치
+it('검색어가 위치와 일치하면 해당 이벤트를 반환해야 한다', () => {
+  const testDate = new Date('2024-11-01');
+  const testView = 'month';
+  const { result } = renderHook(() => useSearch(mockEvents, testDate, testView));
+  act(() => {
+    result.current.setSearchTerm('집');
+  });
+  expect(result.current.filteredEvents.length).toBe(1);
+});
+
+// ! 제목, 설명, 위치 쪼개서 테스트 하고 아래를 테스트를 한다.
 it('검색어가 제목, 설명, 위치 중 하나라도 일치하면 해당 이벤트를 반환해야 한다', () => {
   const testDate = new Date('2024-11-01');
   const testView = 'month';
@@ -93,18 +127,36 @@ it('검색어가 제목, 설명, 위치 중 하나라도 일치하면 해당 이
     result.current.setSearchTerm('실');
   });
   expect(result.current.filteredEvents.length).toBe(2);
+  expect(result.current.filteredEvents[0].title).toBe('팀 회의');
+  expect(result.current.filteredEvents[1].title).toBe('프로젝트 마감');
 });
 
-// TODO 주간, 월간 쪼개기
-it('현재 뷰(주간/월간)에 해당하는 이벤트만 반환해야 한다', () => {
-  const testDate = new Date('2024-11-01');
+// ! 주간, 월간 쪼개서 테스트 한다.
+it.skip('현재 뷰(주간/월간)에 해당하는 이벤트만 반환해야 한다', () => {
+  const testDate = new Date('2024-11-20');
   const testView = 'week';
   const { result } = renderHook(() => useSearch(mockEvents, testDate, testView));
-  expect(result.current.filteredEvents.length).toBe(0);
+  expect(result.current.filteredEvents.length).toBe(3);
+});
+
+// 주간
+it('현재 뷰가 주간일 경우 주간에 해당하는 이벤트만 반환해야 한다', () => {
+  const testDate = new Date('2024-11-20');
+  const testView = 'week';
+  const { result } = renderHook(() => useSearch(mockEvents, testDate, testView));
+  expect(result.current.filteredEvents.length).toBe(3);
+});
+
+// 월간
+it('현재 뷰가 월간일 경우 주간에 해당하는 이벤트만 반환해야 한다', () => {
+  const testDate = new Date('2024-11-20');
+  const testView = 'month';
+  const { result } = renderHook(() => useSearch(mockEvents, testDate, testView));
+  expect(result.current.filteredEvents.length).toBe(5);
 });
 
 it('검색어를 "회의"에서 "점심"으로 변경하면 필터링된 결과가 즉시 업데이트되어야 한다', () => {
-  // ? 여기는 왜 따로 선언해줘야 하죠???
+  // ? testDate 를 공통 지역변수로 선언해서 사용할 경우 해당 테스트만 currentDate 는 '2024-10-27'이 된다. 왜지!
   const testDate = new Date('2024-11-01');
   const testView = 'month';
   const { result } = renderHook(() => useSearch(mockEvents, testDate, testView));

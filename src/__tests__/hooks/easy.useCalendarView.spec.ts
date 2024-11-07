@@ -21,7 +21,8 @@ describe('초기 상태', () => {
   });
 });
 
-// TODO 적절하게를 구체적으로 설명할 수는 없을까?
+// ? Q. 적절하게를 구체적으로 설명할 수는 없을까?
+// ! A: view 를 'week' 변경 시 view state는 'week'로 업데이트되어야 한다. 이런 식이면 좋겠다.
 it("view를 'week'으로 변경 시 적절하게 반영된다", () => {
   const { result } = renderHook(() => useCalendarView());
   const WEEK = 'week';
