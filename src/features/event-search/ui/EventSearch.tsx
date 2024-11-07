@@ -6,7 +6,7 @@ import { SearchForm } from './SearchForm';
 import { useCalendarView } from '../../../hooks/useCalendarView';
 import { useNotifications } from '../../../hooks/useNotifications';
 import { useSearch } from '../../../hooks/useSearch';
-import { NoSuchData } from '../../../shared/ui/NoSuchData';
+import { NoSuchDataText } from '../../../shared/ui/NoSuchDataText';
 import { Event } from '../../../types';
 
 export const EventSearch: React.FC<{
@@ -34,7 +34,7 @@ export const EventSearch: React.FC<{
           />
         ))
       ) : (
-        <NoSuchData />
+        <NoSuchDataText />
       )}
     </VStack>
   );
