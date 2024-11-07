@@ -4,10 +4,7 @@ import { ScheduleCalendar } from './features/calendar/ui/ScheduleCalendar.tsx';
 import { EventAddOrUpdateForm } from './features/event-form/ui/EventAddOrUpdateForm.tsx';
 import { EventOverlapAlertDialog } from './features/event-overlap/EventOverlapAlertDialog.tsx';
 import { EventSearch } from './features/event-search/ui/EventSearch.tsx';
-import { NotificationProvider } from './features/notification/model/NotificationProvider.tsx';
 import { NotificationAlerts } from './features/notification/ui/NotificationAlerts.tsx';
-import { useEventForm } from './hooks/useEventForm.ts';
-import { useEventOperations } from './hooks/useEventOperations.ts';
 import { Event } from './types';
 import { ContainerBox } from './widget/ui/ContainerBox.tsx';
 import { FlexibleSection } from './widget/ui/FlexiableSection.tsx';
@@ -20,7 +17,6 @@ function App() {
   const [overlappingEvents, setOverlappingEvents] = useState<Event[]>([]);
 
   return (
-    <NotificationProvider events={events}>
       <ContainerBox>
         <FlexibleSection>
           {/* 일정 추가/삭제 */}
@@ -48,7 +44,6 @@ function App() {
         {/* 알림 */}
         <NotificationAlerts />
       </ContainerBox>
-    </NotificationProvider>
   );
 }
 
