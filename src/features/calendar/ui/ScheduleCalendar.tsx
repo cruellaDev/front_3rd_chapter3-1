@@ -33,8 +33,8 @@ export const ScheduleCalendar = () => {
         />
       </HStack>
 
-      {view === 'week' && <WeekView view={view} currentDate={currentDate} />}
-      {view === 'month' && <MonthView view={view} currentDate={currentDate} holidays={holidays} />}
+      {view === 'week' && <WeekView currentDate={currentDate} />}
+      {view === 'month' && <MonthView currentDate={currentDate} holidays={holidays} />}
     </VStack>
   );
 };

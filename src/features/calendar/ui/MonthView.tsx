@@ -15,7 +15,6 @@ import {
 import React from 'react';
 
 import { weekDays } from '../../../entities/calendar/config';
-import { useEventOperations } from '../../../hooks/useEventOperations';
 import { useNotifications } from '../../../hooks/useNotifications';
 import { useSearch } from '../../../hooks/useSearch';
 import {
@@ -26,13 +25,11 @@ import {
 } from '../../../utils/dateUtils';
 
 export const MonthView: React.FC<{
-  view: 'month';
   currentDate: Date;
   holidays: { [key: string]: string };
-}> = ({ view, currentDate, holidays }) => {
-  const { events } = useEventOperations();
+}> = ({ currentDate, holidays }) => {
   const { notifiedEvents } = useNotifications();
-  const { filteredEvents } = useSearch(events, currentDate, view);
+  const { filteredEvents } = useSearch();
 
   const weeks = getWeeksAtMonth(currentDate);
 

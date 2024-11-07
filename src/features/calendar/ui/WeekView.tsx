@@ -15,15 +15,13 @@ import {
 import React from 'react';
 
 import { weekDays } from '../../../entities/calendar/config';
-import { useEventOperations } from '../../../hooks/useEventOperations';
 import { useNotifications } from '../../../hooks/useNotifications';
 import { useSearch } from '../../../hooks/useSearch';
 import { formatWeek, getWeekDates } from '../../../utils/dateUtils';
 
-export const WeekView: React.FC<{ view: 'week'; currentDate: Date }> = ({ view, currentDate }) => {
-  const { events } = useEventOperations();
+export const WeekView: React.FC<{ currentDate: Date }> = ({ currentDate }) => {
   const { notifiedEvents } = useNotifications();
-  const { filteredEvents } = useSearch(events, currentDate, view);
+  const { filteredEvents } = useSearch();
   const weekDates = getWeekDates(currentDate);
   return (
     <VStack data-testid="week-view" align="stretch" w="full" spacing={4}>
