@@ -10,3 +10,7 @@ export const parseHM = (timestamp: number) => {
   const m = fillZero(date.getMinutes());
   return `${h}:${m}`;
 };
+
+export const isInvalidDate = (date: Date) => {
+  return date instanceof Date && isNaN(date.getTime());
+};
