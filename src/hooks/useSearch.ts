@@ -1,14 +1,11 @@
-import { useMemo, useState } from 'react';
+import { useAtom, useAtomValue } from 'jotai';
 
-import { Event } from '../types';
-import { getFilteredEvents } from '../utils/eventUtils';
+import { searchTermAtom } from '../entities/calendar/model/Calendar';
+import { filteredEventsAtom } from '../features/event-search/model/Search';
 
-export const useSearch = (events: Event[], currentDate: Date, view: 'week' | 'month') => {
-  const [searchTerm, setSearchTerm] = useState('');
-
-  const filteredEvents = useMemo(() => {
-    return getFilteredEvents(events, searchTerm, currentDate, view);
-  }, [events, searchTerm, currentDate, view]);
+export const useSearch = () => {
+  const [searchTerm, setSearchTerm] = useAtom(searchTermAtom);
+  const filteredEvents = useAtomValue(filteredEventsAtom);
 
   return {
     searchTerm,

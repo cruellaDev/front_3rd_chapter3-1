@@ -1,10 +1,9 @@
 import { FormControl, FormLabel, Input } from '@chakra-ui/react';
-import React from 'react';
 
-export const SearchForm: React.FC<{
-  searchTerm: string;
-  setSearchTerm: (value: string) => void;
-}> = ({ searchTerm, setSearchTerm }) => {
+import { useSearch } from '../../../hooks/useSearch';
+
+export const SearchForm = () => {
+  const { searchTerm, setSearchTerm } = useSearch();
   return (
     <FormControl>
       <FormLabel>일정 검색</FormLabel>

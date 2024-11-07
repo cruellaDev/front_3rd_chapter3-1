@@ -1,39 +1,23 @@
 import { VStack } from '@chakra-ui/react';
-import React from 'react';
 
 import { SearchedEventBox } from './SearchedEventBox';
 import { SearchForm } from './SearchForm';
-import { useCalendarView } from '../../../hooks/useCalendarView';
 import { useNotifications } from '../../../hooks/useNotifications';
 import { useSearch } from '../../../hooks/useSearch';
 import { NoSuchDataText } from '../../../shared/ui/NoSuchDataText';
-import { Event } from '../../../types';
 
-export const EventSearch: React.FC<{
-  events: Event[];
-  // eslint-disable-next-line no-unused-vars
-  editEvent: (event: Event) => void;
-  // eslint-disable-next-line no-unused-vars
-  deleteEvent: (eventId: string) => void;
-}> = ({ events, editEvent, deleteEvent }) => {
-  const { view, currentDate } = useCalendarView();
-  const { searchTerm, filteredEvents, setSearchTerm } = useSearch(events, currentDate, view);
+export const EventSearch = () => {
+  const { filteredEvents } = useSearch();
   const { notifiedEvents } = useNotifications();
   const hasSearchedEvent = filteredEvents.length > 0;
 
   return (
     <VStack data-testid="event-list" w="500px" h="full" overflowY="auto">
-      <SearchForm searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+      <SearchForm />
 
       {hasSearchedEvent ? (
         filteredEvents.map((event) => (
-          <SearchedEventBox
-            key={event.id}
-            event={event}
-            notifiedEvents={notifiedEvents}
-            editEvent={editEvent}
-            deleteEvent={deleteEvent}
-          />
+          <SearchedEventBox key={event.id} event={event} notifiedEvents={notifiedEvents} />
         ))
       ) : (
         <NoSuchDataText />
