@@ -1,25 +1,35 @@
+import { useAtom } from 'jotai';
 import { ChangeEvent, useState } from 'react';
 
+import { editingEventAtom, formAtom, formRepeatAtom } from '../features/event-form/model/EventForm';
 import { Event, RepeatType } from '../types';
 import { getTimeErrorMessage } from '../utils/timeValidation';
 
 type TimeErrorRecord = Record<'startTimeError' | 'endTimeError', string | null>;
 
-export const useEventForm = (initialEvent?: Event) => {
-  const [title, setTitle] = useState(initialEvent?.title || '');
-  const [date, setDate] = useState(initialEvent?.date || '');
-  const [startTime, setStartTime] = useState(initialEvent?.startTime || '');
-  const [endTime, setEndTime] = useState(initialEvent?.endTime || '');
-  const [description, setDescription] = useState(initialEvent?.description || '');
-  const [location, setLocation] = useState(initialEvent?.location || '');
-  const [category, setCategory] = useState(initialEvent?.category || '');
-  const [isRepeating, setIsRepeating] = useState(initialEvent?.repeat.type !== 'none');
-  const [repeatType, setRepeatType] = useState<RepeatType>(initialEvent?.repeat.type || 'none');
-  const [repeatInterval, setRepeatInterval] = useState(initialEvent?.repeat.interval || 1);
-  const [repeatEndDate, setRepeatEndDate] = useState(initialEvent?.repeat.endDate || '');
-  const [notificationTime, setNotificationTime] = useState(initialEvent?.notificationTime || 10);
+export const useEventForm = () => {
+  const [form, setForm] = useAtom(formAtom);
+  const [formRepeat, setFormRepeat] = useAtom(formRepeatAtom);
+  const [editingEvent, setEditingEvent] = useAtom(editingEventAtom);
 
-  const [editingEvent, setEditingEvent] = useState<Event | null>(null);
+  const { title, date, startTime, endTime, description, location, category, notificationTime } =
+    form;
+  const { type: repeatType, interval: repeatInterval, endDate: repeatEndDate } = formRepeat;
+
+  const setTitle = (title: string) => setForm((prev) => ({ ...prev, title }));
+  const setDate = (date: string) => setForm((prev) => ({ ...prev, date }));
+  const setStartTime = (startTime: string) => setForm((prev) => ({ ...prev, startTime }));
+  const setEndTime = (endTime: string) => setForm((prev) => ({ ...prev, endTime }));
+  const setDescription = (description: string) => setForm((prev) => ({ ...prev, description }));
+  const setLocation = (location: string) => setForm((prev) => ({ ...prev, location }));
+  const setCategory = (category: string) => setForm((prev) => ({ ...prev, category }));
+  const setNotificationTime = (notificationTime: number) =>
+    setForm((prev) => ({ ...prev, notificationTime }));
+
+  const [isRepeating, setIsRepeating] = useState(repeatType !== 'none');
+  const setRepeatType = (type: RepeatType) => setFormRepeat((prev) => ({ ...prev, type }));
+  const setRepeatInterval = (interval: number) => setFormRepeat((prev) => ({ ...prev, interval }));
+  const setRepeatEndDate = (endDate: string) => setFormRepeat((prev) => ({ ...prev, endDate }));
 
   const [{ startTimeError, endTimeError }, setTimeError] = useState<TimeErrorRecord>({
     startTimeError: null,

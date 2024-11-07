@@ -11,21 +11,15 @@ import {
 import React, { useRef } from 'react';
 
 import { useEventForm } from '../../hooks/useEventForm';
+import { useEventOperations } from '../../hooks/useEventOperations';
 import { Event, EventForm } from '../../types';
 
 export const EventOverlapAlertDialog: React.FC<{
   isOverlapDialogOpen: boolean;
   setIsOverlapDialogOpen: (value: boolean) => void;
   overlappingEvents: Event[];
-  addEvent: (event: EventForm, onSave?: () => void) => Promise<void>;
-  updateEvent: (event: Event, onSave?: () => void) => Promise<void>;
-}> = ({
-  isOverlapDialogOpen,
-  setIsOverlapDialogOpen,
-  overlappingEvents,
-  addEvent,
-  updateEvent,
-}) => {
+}> = ({ isOverlapDialogOpen, setIsOverlapDialogOpen, overlappingEvents }) => {
+  const { addEvent, updateEvent } = useEventOperations();
   const {
     title,
     date,

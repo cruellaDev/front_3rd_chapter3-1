@@ -4,6 +4,8 @@ import React from 'react';
 import { getPeriodByRepeat } from '../../../entities/event/model/Event';
 import { NotificationHighlighter } from '../../../entities/notification/ui/NotificationHighliter';
 import { NotificationTimeLabelText } from '../../../entities/notification/ui/NotificationTimeLabelText';
+import { useEventForm } from '../../../hooks/useEventForm';
+import { useEventOperations } from '../../../hooks/useEventOperations';
 import { Event } from '../../../types';
 import { EventDeleteButton } from '../../event-delete/ui/EventDeleteButton';
 import { EventEditButton } from '../../event-edit/ui/EventEditButton';
@@ -11,9 +13,10 @@ import { EventEditButton } from '../../event-edit/ui/EventEditButton';
 export const SearchedEventBox: React.FC<{
   event: Event;
   notifiedEvents: string[];
-  editEvent: (event: Event) => void;
-  deleteEvent: (eventId: string) => void;
-}> = ({ event, notifiedEvents, editEvent, deleteEvent }) => {
+}> = ({ event, notifiedEvents }) => {
+  const { editEvent } = useEventForm();
+  const { deleteEvent } = useEventOperations();
+
   return (
     <Box borderWidth={1} borderRadius="lg" p={3} width="100%">
       <HStack justifyContent="space-between">

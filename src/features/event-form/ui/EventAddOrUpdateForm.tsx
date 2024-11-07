@@ -16,22 +16,20 @@ import React from 'react';
 import { categories } from '../../../entities/event/config';
 import { notificationOptions } from '../../../entities/notification/config';
 import { useEventForm } from '../../../hooks/useEventForm';
+import { useEventOperations } from '../../../hooks/useEventOperations';
 import { Event, EventForm, RepeatType } from '../../../types';
 import { findOverlappingEvents } from '../../../utils/eventOverlap';
 import { getTimeErrorMessage } from '../../../utils/timeValidation';
 
 export const EventAddOrUpdateForm: React.FC<{
-  events: Event[];
   // eslint-disable-next-line no-unused-vars
   setOverlappingEvents: (events: Event[]) => void;
   // eslint-disable-next-line no-unused-vars
   setIsOverlapDialogOpen: (value: boolean) => void;
-  // eslint-disable-next-line no-unused-vars
-  addEvent: (event: EventForm, onSave?: () => void) => Promise<void>;
-  // eslint-disable-next-line no-unused-vars
-  updateEvent: (event: Event, onSave?: () => void) => Promise<void>;
-}> = ({ events, setOverlappingEvents, setIsOverlapDialogOpen, addEvent, updateEvent }) => {
+}> = ({ setOverlappingEvents, setIsOverlapDialogOpen }) => {
   const toast = useToast();
+
+  const { events, addEvent, updateEvent } = useEventOperations();
 
   const {
     title,
